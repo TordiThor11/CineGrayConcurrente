@@ -1,7 +1,9 @@
 package org.model;
 
 public class Butaca {
-    private int codigo;
-    private boolean reservado;
-    private Ubicacion ubicacion;
+//    private int codigo; vale la pena?
+    private int fila;
+    private int columna;
+
+    //metodo reservado
 }

@@ -2,10 +2,12 @@ package org.model;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-public class Reserva {  //No estoy seguro de usar este model. Tal vez solo sirva para enviar datos a la DB.
+public class Reserva {
     private String usuario; //Puede ser cualquier otra forma de identificar al usuario que reservo
+    private Sala sala;
     private Butaca butaca;
-    private Timestamp fechaDeReserva; // Timestamp(int year, int month, int date, int hour, int minute, int second, int nano)
-    private boolean vigencia; //True=activo y false=cancelado
+    private LocalDateTime fechaDeReserva;
+    private boolean vigencia; //True=activo/reservado y false=cancelado
 }
