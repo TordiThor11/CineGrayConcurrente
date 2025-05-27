@@ -26,14 +26,12 @@ public class Sala { //Cada sala del cine tiene 10x10 butacas
         return butacas;
     }
 
-    public boolean agregarFuncion(LocalDateTime fechaHora, Pelicula pelicula) {
+    public void agregarFuncion(LocalDateTime fechaHora, Pelicula pelicula) throws Exception {
         if (cronogramaPeliculas.containsKey(fechaHora)) {
-            System.out.println("Error: Ya hay una función en ese horario.");
-            return false;
+            throw new Exception("Ya hay una función en ese horario");
         }
         cronogramaPeliculas.put(fechaHora, pelicula);
         disponibilidadButacas.put(fechaHora, inicializarButacas());
-        return true;
     }
 
     public void mostrarFunciones() {
@@ -49,5 +47,13 @@ public class Sala { //Cada sala del cine tiene 10x10 butacas
     public void reservarButaca(LocalDateTime fechaHora, int fila, int columna) throws Exception {
         Butaca[][] butacas = disponibilidadButacas.get(fechaHora);
         butacas[fila][columna].reservar();
+    }
+
+    public String getNombre(){
+        return nombre;
+    }
+    @Override
+    public String toString() {
+        return nombre;
     }
 }
