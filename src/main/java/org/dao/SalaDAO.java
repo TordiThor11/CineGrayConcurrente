@@ -1,4 +1,5 @@
 package org.dao;
+import org.model.Funcion;
 import org.model.Pelicula;
 import org.model.Sala;
 
@@ -14,42 +15,43 @@ public class SalaDAO {
     public SalaDAO() {
         this.dataSource = new DataSource();
     }
-    public TreeMap<LocalDateTime, Pelicula> getCronogramaPeliculas(String nombreSala) throws SQLException{
-        TreeMap<LocalDateTime, Pelicula> cronograma = new TreeMap<>();
-        String sql = "SELECT cp.fecha, p.nombre FROM cronograma_peliculas cp JOIN salas s ON cp.id_sala = s.id JOIN peliculas p ON cp.id_pelicula = p.id WHERE s.nombre = ? ORDER BY cp.fecha;";
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, nombreSala);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    LocalDateTime fecha = rs.getTimestamp("fecha").toLocalDateTime();
-                    Pelicula pelicula = new Pelicula(rs.getString("nombre"));
-                    cronograma.put(fecha, pelicula);
-                }
-            }
-        }
-        return cronograma;
-    }
-
-    public List<Sala> getAll() throws SQLException {
-        String sql = "SELECT nombre FROM salas";
+    public List<Sala> getTodasLasSalas() throws SQLException {
         List<Sala> salas = new ArrayList<>();
+        String sql = "SELECT id, nombre, filas, columnas FROM salas";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-//                int id = rs.getInt("id");
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
-                salas.add(new Sala(nombre));
+                int filas = rs.getInt("filas");
+                int columnas = rs.getInt("columnas");
+                salas.add(new Sala(id, nombre, filas, columnas));
             }
-
         }
-
         return salas;
+    }
+
+    public void cargarFuncionesDeSala(Sala sala) throws Exception {
+        String sql = "SELECT f.id, f.horario, p.id AS pid, p.nombre AS pnombre FROM funciones f " +
+                "JOIN peliculas p ON f.id_pelicula = p.id WHERE f.id_sala = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, sala.getId());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idFuncion = rs.getInt("id");
+                    LocalDateTime horario = rs.getTimestamp("horario").toLocalDateTime();
+                    Pelicula pelicula = new Pelicula(rs.getInt("pid"), rs.getString("pnombre"));
+                    Funcion funcion = new Funcion(idFuncion, horario, pelicula, sala.getFilas(), sala.getColumnas());
+                    sala.agregarFuncion(funcion);
+                }
+            }
+        }
     }
 }
