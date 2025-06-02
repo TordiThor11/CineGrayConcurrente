@@ -22,7 +22,10 @@ public class ReservasGUI extends JFrame {
 
     private final CineRepository repo;
     private final ReservaService reservaService;
+
+    //La instancia executor de la clase ExecutorService es quien crea los hilos en simulacion o al reservar una butaca.
     private final ExecutorService executor = Executors.newFixedThreadPool(50); //El cine tiene 50 pcs para reservar.
+
 
     public ReservasGUI(CineRepository repo, ReservaService reservaService) {
         this.repo = repo;

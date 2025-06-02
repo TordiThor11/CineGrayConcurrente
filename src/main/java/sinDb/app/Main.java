@@ -7,7 +7,6 @@ import sinDb.ui.ReservasGUI;
 import sinDb.util.DataGenerator;
 
 import javax.swing.*;
-import java.util.concurrent.ExecutorService;
 
 public class Main {
     public static void main(String[] args) {
